@@ -14,9 +14,9 @@ def example_callback(img):
     return {'message': 'image received. size={}x{}'.format(img.shape[1], img.shape[0])}
 
 # Initialize the application
-flask_receiver = ImageReceiver()
-flask_receiver.set_callback(example_callback)
-flask_receiver.run()
+image_receiver = ImageReceiver()
+image_receiver.set_callback(example_callback)
+image_receiver.run()
 ```
 
 On the local machine you can send an image and get an appropriate response:
