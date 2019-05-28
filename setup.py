@@ -11,5 +11,10 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/RaymondKirk/SimpleImageTransport",
     packages=["SimpleImageTransport"],
+    classifiers=[
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+    ],
     install_requires=['opencv-python', 'Flask', 'numpy', 'requests', 'jsonpickle'],
 )
