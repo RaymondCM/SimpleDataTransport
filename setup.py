@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='SimpleImageTransport',
-    version='1.0',
+    version='1.2',
     author="Raymond Kirk",
     author_email="ray.tunstill@live.co.uk",
     description="Simple python 3 library for transporting images to a remote machine, applying transformations and "

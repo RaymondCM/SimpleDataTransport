@@ -1,6 +1,5 @@
-import json
-
 import cv2
+import jsonpickle
 import requests
 import numpy as np
 
@@ -17,8 +16,11 @@ def send_image(image: np.array, host: str = "0.0.0.0", port: int = 5000, endpoin
     headers = {'content-type': 'image/jpeg'}
     post_url = "http://{}:{}{}".format(host, port, endpoint)
     _, img_encoded = cv2.imencode('.jpg', image)
-    post_response = requests.post(post_url, data=img_encoded.tostring(), headers=headers)
-    return json.loads(post_response.text)
+    try:
+        post_response = requests.post(post_url, data=img_encoded.tostring(), headers=headers)
+    except requests.exceptions.ConnectionError as e:
+        raise ConnectionError(e)
+    return jsonpickle.decode(post_response.text)
 
 
 if __name__ == '__main__':
