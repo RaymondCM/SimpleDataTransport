@@ -1,10 +1,15 @@
+from __future__ import print_function
 import cv2
 import jsonpickle
 import requests
-import numpy as np
 
 
-def send_image(image: np.array, host: str = "0.0.0.0", port: int = 5000, endpoint: str = "/api/image") -> dict:
+class ConnectionError(Exception):
+    pass
+
+
+def ImageSender(image, host="0.0.0.0", port= 5000, endpoint="/api/image"):
+    # type: (np.array, str, int, str) -> dict
     """Utility function to send numpy image to api endpoint
 
     :param image: Image in the format of a uint8 numpy array
@@ -24,7 +29,10 @@ def send_image(image: np.array, host: str = "0.0.0.0", port: int = 5000, endpoin
 
 
 if __name__ == '__main__':
+    from timeit import default_timer as timer
+
     while True:
+        start = timer()
         img = cv2.imread('test.png')
-        response = send_image(img)
-        print(response)
+        response = ImageSender(img)
+        print("Response received in {:.2f} ms:".format((timer() - start) * 1000), response)

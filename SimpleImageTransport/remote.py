@@ -1,13 +1,17 @@
-from typing import Callable
 from flask import Flask, request, Response
 import jsonpickle
 import numpy as np
 import cv2
 
+try:
+    from typing import Callable
+except ImportError:
+    pass
 
-class FlaskImageReceiver:
-    def __init__(self, host: str = "0.0.0.0", port: int = 5000, callback: Callable = None, endpoint: str = "/api/image",
-                 name: str = __name__) -> None:
+
+class ImageReceiver:
+    def __init__(self, host="0.0.0.0", port= 5000, callback= None, endpoint="/api/image", name= __name__):
+        # type: (str, int, Callable, str, str) -> None
         """Provides an easy to use interface to send/receive image information over a network connection
 
         :param host: IP address to host server/remote service on
@@ -26,7 +30,8 @@ class FlaskImageReceiver:
             self.set_callback(callback)
         self.app.route(self.endpoint, methods=['POST'])(self.receive_image)
 
-    def set_callback(self, callback: Callable) -> None:
+    def set_callback(self, callback):
+        # type: (Callable) -> None
         """Sets the modification function applied to received images
 
         :param callback: Function to modify received images and return a dict
@@ -36,12 +41,14 @@ class FlaskImageReceiver:
         else:
             raise ValueError("Parameter callback is not callable")
 
-    def run(self) -> None:
+    def run(self):
+        # type: () -> None
         """Starts the application and endpoint handlers
         """
         self.app.run(host=self.host, port=self.port)
 
     def receive_image(self):
+        # type: () -> Response
         """API endpoint function to process received images
 
         :return: Dict of endpoint response/callback return
@@ -69,7 +76,7 @@ if __name__ == '__main__':
         return {'message': 'image received. size={}x{}'.format(img.shape[1], img.shape[0])}
 
     # Initialize the Flask application
-    flask_receiver = FlaskImageReceiver()
+    flask_receiver = ImageReceiver()
     flask_receiver.set_callback(example_callback)
     flask_receiver.run()
 
