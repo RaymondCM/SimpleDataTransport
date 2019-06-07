@@ -1,6 +1,6 @@
 from __future__ import print_function
-import cv2
 import jsonpickle
+import numpy as np
 import requests
 
 
@@ -8,21 +8,21 @@ class ConnectionError(Exception):
     pass
 
 
-def ImageSender(image, host="0.0.0.0", port= 5000, endpoint="/api/image"):
-    # type: (np.array, str, int, str) -> dict
-    """Utility function to send numpy image to api endpoint
+def DataSender(data, host="0.0.0.0", port= 5000, endpoint="/api/image"):
+    # type: (dict, str, int, str) -> dict
+    """Utility function to send dict to api endpoint
 
-    :param image: Image in the format of a uint8 numpy array
+    :param data: Dict containing fields such as images in the format of a uint8 numpy array
     :param host: Remote IP address
     :param port: Remote address port
     :param endpoint: The api endpoint set in the image receiver
     :return: Response dictionary containing endpoint response
     """
-    headers = {'content-type': 'image/jpeg'}
+    headers = {'content-type': 'application/json'}
     post_url = "http://{}:{}{}".format(host, port, endpoint)
-    _, img_encoded = cv2.imencode('.jpg', image)
+
     try:
-        post_response = requests.post(post_url, data=img_encoded.tostring(), headers=headers)
+        post_response = requests.post(post_url, data=jsonpickle.encode(data), headers=headers)
     except requests.exceptions.ConnectionError as e:
         raise ConnectionError(e)
     return jsonpickle.decode(post_response.text)
@@ -33,6 +33,6 @@ if __name__ == '__main__':
 
     while True:
         start = timer()
-        img = cv2.imread('test.png')
-        response = ImageSender(img)
+        img = np.random.random((512, 512, 3))
+        response = DataSender({"image": img})
         print("Response received in {:.2f} ms:".format((timer() - start) * 1000), response)

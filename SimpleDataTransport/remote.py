@@ -1,7 +1,5 @@
 from flask import Flask, request, Response
 import jsonpickle
-import numpy as np
-import cv2
 
 try:
     from typing import Callable
@@ -9,8 +7,8 @@ except ImportError:
     pass
 
 
-class ImageReceiver:
-    def __init__(self, host="0.0.0.0", port= 5000, callback= None, endpoint="/api/image", name= __name__):
+class DataReceiver:
+    def __init__(self, host="0.0.0.0", port=5000, callback=None, endpoint="/api/image", name=__name__):
         # type: (str, int, Callable, str, str) -> None
         """Provides an easy to use interface to send/receive image information over a network connection
 
@@ -53,30 +51,27 @@ class ImageReceiver:
 
         :return: Dict of endpoint response/callback return
         """
-        # Convert string of image data to uint8
-        img_encoded = np.frombuffer(request.data, np.uint8)
-
-        # Decode image
-        img = cv2.cvtColor(cv2.imdecode(img_encoded, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
-
-        response = {'message': 'image received. size={}x{}'.format(img.shape[1], img.shape[0])}
-
         # Call the function and get response dict
         if self.callback is not None and callable(self.callback):
-            callback_response = self.callback(img)
+            # Decode data
+            data = jsonpickle.decode(request.data)
+            callback_response = self.callback(data)
             if isinstance(callback_response, dict):
                 response = callback_response
+        else:
+            # Set default message
+            response = {'message': 'data received, no remote callback present'}
 
-        response_pickled = jsonpickle.encode(response)
-        return Response(response=response_pickled, status=200, mimetype="application/json")
+        return Response(response=jsonpickle.encode(response), status=200, mimetype="application/json")
 
 
 if __name__ == '__main__':
-    def example_callback(img):
+    def example_callback(data):
+        img = data["image"]
         return {'message': 'image received. size={}x{}'.format(img.shape[1], img.shape[0])}
 
+
     # Initialize the Flask application
-    flask_receiver = ImageReceiver()
+    flask_receiver = DataReceiver()
     flask_receiver.set_callback(example_callback)
     flask_receiver.run()
-

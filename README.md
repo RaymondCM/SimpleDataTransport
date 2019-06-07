@@ -1,4 +1,4 @@
-# SimpleImageTransport
+# SimpleDataTransport
 
 Simple python 3 library for transporting images to a remote machine, applying transformations and returning a response.
 
@@ -7,26 +7,28 @@ Simple python 3 library for transporting images to a remote machine, applying tr
 Start a server on the remote machine:
 
 ```python
-from SimpleImageTransport import ImageReceiver
+from SimpleDataTransport import DataReceiver
 
-# Callback takes a single parameter image and returns a dict of useful data
-def example_callback(img):
+# Callback takes a single dict with an image and returns a dict of useful data
+def example_callback(data):
+    img = data["image"]
     return {'message': 'image received. size={}x{}'.format(img.shape[1], img.shape[0])}
 
-# Initialize the application
-image_receiver = ImageReceiver()
-image_receiver.set_callback(example_callback)
-image_receiver.run()
+
+# Initialize the Flask application
+flask_receiver = DataReceiver()
+flask_receiver.set_callback(example_callback)
+flask_receiver.run()
 ```
 
 On the local machine you can send an image and get an appropriate response:
 
 ```python
-from SimpleImageTransport import ImageSender
+from SimpleDataTransport import DataSender
 import numpy as np
 
 img = np.zeros((1080, 1920))
 
-response = ImageSender(img)
+response = DataSender(img)
 print(response)  # {'message': 'image received. size=1920x1080'}
 ```
