@@ -1,0 +1,54 @@
+# @Author: archer
+# @Date:   2019-07-23T10:07:36+01:00
+# @Last modified by:   archer
+# @Last modified time: 2019-07-23T10:44:21+01:00
+
+
+
+# Maintainer: George Raven <GeorgeRavenCommunity AT pm dot me>
+pkgname=python-simple-data-transport-git
+_pkgsrcname="SimpleDataTransport"
+pkgver=1.5
+pkgrel=1
+pkgdesc="Simple python 2/3 library for transporting data to a remote machine, applying transformations and returning a response."
+arch=('any')
+url="https://github.com/RaymondKirk/${_pkgsrcname}"
+_branch="master"
+license=('MIT') # MIT is a special case store a copy in /usr/share/pkgname
+groups=()
+depends=('python-flask' 'python-numpy' 'python-requests' 'python-jsonpickle')
+makedepends=('git')
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+source=("${_pkgsrcname}::git+${url}#branch=${_branch}")
+noextract=()
+md5sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/${_pkgsrcname}"
+	printf "%s" "$(git describe --long | sed 's/\([^-]*-\)g/r\1/;s/-/./g')"
+}
+
+prepare() {
+	cd "$srcdir/${_pkgsrcname}"
+	git checkout ${_branch} # get off of makepkg branch
+}
+
+build() {
+	cd "$srcdir/${_pkgsrcname}"
+}
+
+check() {
+	cd "$srcdir/${_pkgsrcname}"
+}
+
+package() {
+	cd "$srcdir/${_pkgsrcname}"
+	python3 setup.py install --prefix=/usr --root="$pkgdir/" --optimize=1
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
