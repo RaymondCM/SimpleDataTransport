@@ -1,14 +1,14 @@
 # @Author: archer
 # @Date:   2019-07-23T10:07:36+01:00
 # @Last modified by:   archer
-# @Last modified time: 2019-07-23T10:44:21+01:00
+# @Last modified time: 2019-07-23T10:51:20+01:00
 
 
 
 # Maintainer: George Raven <GeorgeRavenCommunity AT pm dot me>
 pkgname=python-simple-data-transport-git
 _pkgsrcname="SimpleDataTransport"
-pkgver=1.5
+pkgver=1.5.r0.460c80c
 pkgrel=1
 pkgdesc="Simple python 2/3 library for transporting data to a remote machine, applying transformations and returning a response."
 arch=('any')
